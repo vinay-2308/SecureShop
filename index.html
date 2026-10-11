@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Discover everyday essentials at SecureShop.">
+  <title>SecureShop | Everyday Essentials</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="header">
+    <a class="logo" href="#" aria-label="SecureShop home">secure<span>shop.</span></a>
+    <nav aria-label="Main navigation">
+      <a href="#products">Shop</a>
+      <a href="#about">About</a>
+    </nav>
+    <button class="cart-button" id="cart-button" aria-label="Open shopping cart">
+      Bag <span id="cart-count">0</span>
+    </button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">THE EVERYDAY COLLECTION</p>
+      <h1>Good things.<br>Better living.</h1>
+      <p>Thoughtful essentials for wherever life takes you.</p>
+      <a class="primary-button" href="#products">Explore products ↓</a>
+      <div class="hero-art" aria-hidden="true">🎧　👟　⌚</div>
+    </section>
+
+    <section class="shop-section" id="products">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">OUR COLLECTION</p>
+          <h2>Find your favourites</h2>
+        </div>
+        <label class="search-label">
+          <span class="sr-only">Search products</span>
+          <input id="search" type="search" placeholder="Search products...">
+        </label>
+      </div>
+
+      <div class="filters" aria-label="Filter products">
+        <button class="filter active" data-category="All">All</button>
+        <button class="filter" data-category="Tech">Tech</button>
+        <button class="filter" data-category="Style">Style</button>
+        <button class="filter" data-category="Lifestyle">Lifestyle</button>
+      </div>
+
+      <p id="result-count" class="result-count" aria-live="polite"></p>
+      <div class="product-grid" id="product-grid"></div>
+    </section>
+
+    <section class="about" id="about">
+      <p class="eyebrow">SIMPLE BY DESIGN</p>
+      <h2>Less clutter. More of what matters.</h2>
+      <p>A demo storefront built to learn frontend development, Git, automated testing and continuous deployment.</p>
+    </section>
+  </main>
+
+  <div class="cart-overlay" id="cart-overlay" hidden>
+    <section class="cart-panel" role="dialog" aria-modal="true"
+      aria-labelledby="cart-title">
+      <div class="cart-heading">
+        <h2 id="cart-title">Your bag</h2>
+        <button id="close-cart" class="close-button" aria-label="Close cart">✕</button>
+      </div>
+      <div id="cart-items"></div>
+      <div class="cart-footer">
+        <p>Subtotal <strong id="cart-total">€0.00</strong></p>
+        <p class="cart-note">Demo only. Checkout and payments are not enabled.</p>
+        <button class="primary-button checkout-button" id="checkout">Continue</button>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <a class="logo" href="#">secure<span>shop.</span></a>
+    <p>Learning project · Static demo · No real payments</p>
+  </footer>
+</body>
+</html>
