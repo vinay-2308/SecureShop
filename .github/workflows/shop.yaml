@@ -21,6 +21,7 @@ jobs:
 
   # JOB 1: Checkout and Code Quality
   code-quality:
+
     name: Code Quality
     runs-on: ubuntu-latest
 
@@ -37,21 +38,31 @@ jobs:
           args: >
             -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
             -Dsonar.sources=.
-            -Dsonar.qualitygate.wait=true
- 
-  docker:
-    name: docker
-    
+
+  
+  # JOB 2: Build and Scan Docker Image
+  build-and-scan:
+
+    name: Build and Scan Docker Image
     runs-on: ubuntu-latest
 
     steps:
-      - name: docker image
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: SonarQube Quality Gate Check
-        run:  docker build -t shop .
+      - name: Build Docker Image
+        run: |
+          docker build -t ${{ env.IMAGE_NAME }} .
 
-
-
-  
-      
+      - name: Scan Docker Image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}
+          format: 'table'
+          exit-code: '1'
+          severity-threshold: 'CRITICAL'
+# need to run the image 
+      - name: Run Docker Image
+        run: |
+          docker run -d --name secureshop_container -p 8080:8080 ${{ env.IMAGE_NAME }}  
+ 
