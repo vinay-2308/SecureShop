@@ -39,20 +39,18 @@ jobs:
             -Dsonar.sources=.
             -Dsonar.qualitygate.wait=true
  
-  quality-gates:
-    name: Quality Gates
-    needs: code-quality
+  docker:
+    name: docker
+    
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: docker image
         uses: actions/checkout@v4
 
       - name: SonarQube Quality Gate Check
-        uses: sonarsource/sonarqube-quality-gate-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run:  docker build -t shop .
+
 
 
   
