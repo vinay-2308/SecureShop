@@ -1,0 +1,90 @@
+
+name: SecureShop 
+
+on:
+  push:
+    branches:
+      - main
+
+
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  IMAGE_NAME: secureshop
+  SONAR_PROJECT_KEY: SecureShop
+
+jobs:
+
+  # JOB 1: Checkout and Code Quality
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
+            -Dsonar.sources=.
+
+  # JOB 2: Build and Scan Docker Image
+  docker-build-scan:
+    name: Docker Build and Security Scan
+    needs: code-quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: |
+          docker build -t secureshop:${{ github.sha }} .
+
+      - name: Trivy Security Scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: secureshop:${{ github.sha }}
+          format: table
+          exit-code: '1'
+          severity: CRITICAL,HIGH
+
+  # JOB 3: Push Image to Docker Hub
+  docker-push:
+    name: Push Docker Image
+    needs: docker-build-scan
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: |
+          docker build -t secureshop:${{ github.sha }} .
+
+      - name: Docker Hub Login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Image
+        run: |
+          docker tag secureshop:${{ github.sha }} \
+            ${{ secrets.DOCKERHUB_USERNAME }}/secureshop:${{ github.sha }}
+
+          docker push \
+            ${{ secrets.DOCKERHUB_USERNAME }}/secureshop:${{ github.sha }}
