@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+    environment {
+        scannerHome = tool 'sonar'
+    }
+
+    stages {
+        stage('code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/vinay-2308/SecureShop.git'
+            }
+        }
+        stage('cqa'){
+            steps{
+                withSonarQubeEnv('sonar') {
+                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=myproject"
+                    
+                }
+  }
+}
+        stage('qualitygates'){
+            steps{
+                waitForQualityGate abortPipeline: false, credentialsId: 'sonar'
+            }
+        }
+        stage('imege'){
+            steps {
+              sh "docker build -t shop ."
+              sh "docker run -itd --name shop -p 2000:80 shop"
+            }
+        }
+            }
+        }
+
+
