@@ -37,8 +37,7 @@ jobs:
           args: >
             -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
             -Dsonar.sources=.
-            
- quality gates:
+  quality-gates:
     name: Quality Gates
     needs: code-quality
     runs-on: ubuntu-latest
