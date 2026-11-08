@@ -5,11 +5,11 @@ pipeline {
     }
 
     stages {
-       // stage('code') {
+       ''' stage('code') {
             steps {
                 git branch: 'main', url: 'https://github.com/vinay-2308/SecureShop.git'
             }
-        }
+        }'''
         stage('cqa'){
             steps{
                 withSonarQubeEnv('sonar') {
